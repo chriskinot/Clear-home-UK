@@ -94,7 +94,6 @@
       "https://www.facebook.com/profile.php?id=61585928326701"
     ]
   }
-    
   </script>
 
   <!-- ══ STRUCTURED DATA — FAQPage ══ -->
@@ -643,8 +642,6 @@
 </head>
 <body itemscope itemtype="https://schema.org/LocalBusiness">
 
-
-
 <!-- NAV -->
 <nav id="navbar" role="navigation" aria-label="Main navigation">
   <a href="https://clearhomeuk.netlify.app/" class="nav-logo" aria-label="Clear Home UK Ltd home">
@@ -659,7 +656,8 @@
     <li><a href="tel:+447911123456" class="nav-phone-link" aria-label="Call us now">📞 07911 123 456</a></li>
     <li><a href="#contact" class="nav-cta">Free Quote</a></li>
   </ul>
-  <button class="hamburger" onclick="openMob()" aria-label="Open menu">
+  <!-- Hamburger button with toggle functionality -->
+  <button class="hamburger" onclick="toggleMob()" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobMenu">
     <span></span><span></span><span></span>
   </button>
 </nav>
@@ -1074,9 +1072,29 @@
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
   });
 
-  // Mobile menu
-  function openMob() { document.getElementById('mobMenu').classList.add('open'); document.body.style.overflow='hidden'; }
-  function closeMob() { document.getElementById('mobMenu').classList.remove('open'); document.body.style.overflow=''; }
+  // Mobile menu functions (updated for toggle)
+  const mobMenu = document.getElementById('mobMenu');
+  const hamburger = document.querySelector('.hamburger');
+
+  function openMob() {
+    mobMenu.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    hamburger.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeMob() {
+    mobMenu.classList.remove('open');
+    document.body.style.overflow = '';
+    hamburger.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleMob() {
+    if (mobMenu.classList.contains('open')) {
+      closeMob();
+    } else {
+      openMob();
+    }
+  }
 
   // Smooth scroll for all anchor links
   document.querySelectorAll('a[href^="#"]').forEach(a => {
@@ -1114,6 +1132,9 @@
     btn.textContent = '✓ Quote Request Sent!';
     btn.style.background = '#3D8C5A';
   }
+
+  // Set initial aria-expanded state
+  hamburger.setAttribute('aria-expanded', 'false');
 </script>
 </body>
 </html>

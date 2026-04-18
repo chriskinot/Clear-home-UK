@@ -213,6 +213,14 @@
       perspective: 1200px;
     }
 
+    /* Dust mote canvas */
+    #dustCanvas {
+      position: absolute; inset: 0; z-index: 2;
+      pointer-events: none;
+      opacity: 0.5;
+      mix-blend-mode: soft-light;
+    }
+
     /* Ken Burns animation layer */
     .hero-bg-wrap {
       position: absolute;
@@ -548,26 +556,60 @@
     }
 
     /* ══════════════════════════════════════════
-       TRUST STRIP
+       TRUST CAROUSEL (HERO BASE)
     ══════════════════════════════════════════ */
     .trust-strip {
       background: rgba(30,64,175,0.12);
       border-top: 1px solid rgba(96,165,250,0.12);
       border-bottom: 1px solid rgba(96,165,250,0.12);
       padding: 1.2rem 5%;
-      display: flex; align-items: center; justify-content: center;
-      gap: 2rem; flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
     }
-    .strip-item {
-      display: flex; align-items: center; gap: 0.55rem;
+    .trust-slideshow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.5rem;
+    }
+    .trust-slide {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
       font-size: var(--fs-xs);
       font-weight: 500;
       letter-spacing: 0.09em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.6);
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      position: absolute;
+      pointer-events: none;
     }
-    .strip-item .s-icon { color: var(--interact); }
-    .strip-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+    .trust-slide.active {
+      opacity: 1;
+      position: relative;
+      pointer-events: auto;
+    }
+    .trust-slide .s-icon { color: var(--interact); margin-right: 0.25rem; font-size: 1.1em; }
+    .trust-dots {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+    .trust-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .trust-dot.active {
+      background: var(--interact);
+      width: 16px;
+      border-radius: 10px;
+    }
 
     /* ══════════════════════════════════════════
        SHARED SECTION UTILITIES
@@ -994,7 +1036,6 @@
       .footer-inner { flex-direction:column; text-align:center; }
       .footer-links { flex-wrap:wrap; justify-content:center; }
       .hero-actions { flex-direction:column; align-items:flex-start; gap:1rem; }
-      .trust-strip { gap:1rem; }
       .services-top { flex-direction:column; align-items:flex-start; }
       .cta-inner { flex-direction:column; align-items:flex-start; }
       .hero-floating-badge { display: none; }
@@ -1042,109 +1083,48 @@
     <a href="#contact"      onclick="closeMob()">Get a Quote</a>
   </div>
 
-  <section id="hero" aria-label="Clear Home UK — House Clearance Services Newcastle" itemscope itemtype="https://schema.org/WPHeader">
-
-    <div class="hero-bg-wrap" aria-hidden="true">
-      <div class="hero-bg"></div>
-    </div>
-
-    <div class="hero-overlay"  aria-hidden="true"></div>
-    <div class="hero-vignette" aria-hidden="true"></div>
-
+  <section id="hero">
+    <canvas id="dustCanvas"></canvas>
+    <div class="hero-bg-wrap"><div class="hero-bg"></div></div>
+    <div class="hero-overlay"></div><div class="hero-vignette"></div>
     <div style="width:100%;position:relative;z-index:3;">
       <div class="hero-content">
-
         <div class="hero-left">
-          <div class="hero-eyebrow" aria-label="Newcastle Upon Tyne &amp; UK-Wide House Clearance">
-            Newcastle Upon Tyne &amp; UK-Wide House Clearance
-          </div>
-
-          <h1 class="hero-h1" id="heroH1">
-            Clear the Clutter.<br>
-            <em>Get Paid for<br>the Good Stuff.</em>
-          </h1>
-
-          <p class="hero-sub">
-            Professional, reliable house clearance across Newcastle and the whole UK.
-            We handle everything — from single rooms to full properties — quickly,
-            respectfully, affordably. We even <strong>pay you</strong> for items of value.
-          </p>
-
+          <div class="hero-eyebrow">Newcastle Upon Tyne &amp; UK-Wide House Clearance</div>
+          <h1 class="hero-h1" id="heroH1">Clear the Clutter.<br><em>Get Paid for<br>the Good Stuff.</em></h1>
+          <p class="hero-sub">Professional, reliable house clearance across Newcastle and the whole UK. We handle everything — quickly, respectfully, affordably. We even <strong>pay you</strong> for items of value.</p>
           <div class="hero-actions">
-            <div class="btn-mag-wrap" id="magWrap">
-              <a href="#contact" class="btn-primary" id="magBtn" aria-label="Get a free quote">
-                📋 Get a Free Quote
-              </a>
-            </div>
-            <div class="hero-phone-block">
-              <div>
-                <a href="tel:+447911123456" class="hero-phone-link" aria-label="Call Clear Home UK on 07911 123 456">
-                  📞 07911 123 456
-                </a>
-                <div class="hero-phone-label">Available 7 days a week</div>
-              </div>
-            </div>
+            <div class="btn-mag-wrap" id="magWrap"><a href="#contact" class="btn-primary" id="magBtn">📋 Get a Free Quote</a></div>
+            <div class="hero-phone-block"><div><a href="tel:+447911123456" class="hero-phone-link">📞 07911 123 456</a><div class="hero-phone-label">Available 7 days a week</div></div></div>
           </div>
         </div>
-
-        <div class="hero-right" aria-hidden="true">
-          <div class="glass-card">
-            <div class="glass-card-title">Our Services</div>
+        <div class="hero-right">
+          <div class="glass-card"><div class="glass-card-title">Our Services</div>
             <div class="service-pill"><div class="pill-left"><span class="pill-icon">🏠</span><span class="pill-text">House Clearance</span></div><span class="pill-arrow">→</span></div>
             <div class="service-pill"><div class="pill-left"><span class="pill-icon">🚛</span><span class="pill-text">Removals</span></div><span class="pill-arrow">→</span></div>
             <div class="service-pill"><div class="pill-left"><span class="pill-icon">🏢</span><span class="pill-text">Commercial Properties</span></div><span class="pill-arrow">→</span></div>
             <div class="service-pill"><div class="pill-left"><span class="pill-icon">🎓</span><span class="pill-text">Student Accommodation</span></div><span class="pill-arrow">→</span></div>
             <div class="service-pill"><div class="pill-left"><span class="pill-icon">🕊️</span><span class="pill-text">Bereavement Clearance</span></div><span class="pill-arrow">→</span></div>
           </div>
-
-          <div class="hero-stats">
-            <div class="hero-stat">
-              <div class="hero-stat-num">7</div>
-              <div class="hero-stat-label">Days a week</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-num">100<span style="font-size:1.2rem">%</span></div>
-              <div class="hero-stat-label">Free quotes</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-num">UK</div>
-              <div class="hero-stat-label">Wide cover</div>
-            </div>
-          </div>
+          <div class="hero-stats"><div class="hero-stat"><div class="hero-stat-num">7</div><div class="hero-stat-label">Days a week</div></div><div class="hero-stat"><div class="hero-stat-num">100<span>%</span></div><div class="hero-stat-label">Free quotes</div></div><div class="hero-stat"><div class="hero-stat-num">UK</div><div class="hero-stat-label">Wide cover</div></div></div>
         </div>
-
       </div>
     </div>
-
-    <div class="hero-cursor-light" id="heroCursorLight" aria-hidden="true"></div>
-
-    <div class="hero-depth-layer" id="heroDepthLayer" aria-hidden="true"></div>
-
-    <div class="hero-floating-badge" aria-hidden="true">
-      <div class="badge-pulse"></div>
-      <div>
-        <div class="badge-text-main">Available Now</div>
-        <div class="badge-text-sub">Same-day bookings · 7 days a week</div>
-      </div>
-    </div>
-
-    <div class="hero-scroll-hint" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})" role="button" aria-label="Scroll to services" tabindex="0">
-      <div class="scroll-wheel"></div>
-      <span class="scroll-hint-text">Scroll to explore</span>
-    </div>
-
+    <div class="hero-cursor-light" id="heroCursorLight"></div>
+    <div class="hero-depth-layer" id="heroDepthLayer"></div>
+    <div class="hero-floating-badge"><div class="badge-pulse"></div><div><div class="badge-text-main">Available Now</div><div class="badge-text-sub">Same-day bookings · 7 days</div></div></div>
+    <div class="hero-scroll-hint" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})"><div class="scroll-wheel"></div><span class="scroll-hint-text">Scroll to explore</span></div>
   </section>
 
   <div class="trust-strip" role="complementary" aria-label="Key trust signals">
-    <div class="strip-item"><span class="s-icon">✓</span> Fast &amp; Reliable</div>
-    <div class="strip-dot"></div>
-    <div class="strip-item"><span class="s-icon">♻</span> Eco-Responsible Disposal</div>
-    <div class="strip-dot"></div>
-    <div class="strip-item"><span class="s-icon">£</span> We Pay for Valuables</div>
-    <div class="strip-dot"></div>
-    <div class="strip-item"><span class="s-icon">🕊</span> Sensitive Bereavement Care</div>
-    <div class="strip-dot"></div>
-    <div class="strip-item"><span class="s-icon">📍</span> Newcastle &amp; UK-Wide</div>
+    <div class="trust-slideshow" id="trustSlideshow">
+      <div class="trust-slide active"><span class="s-icon">✓</span> Fast &amp; Reliable</div>
+      <div class="trust-slide"><span class="s-icon">♻</span> Eco-Responsible Disposal</div>
+      <div class="trust-slide"><span class="s-icon">£</span> We Pay for Valuables</div>
+      <div class="trust-slide"><span class="s-icon">🕊</span> Sensitive Bereavement Care</div>
+      <div class="trust-slide"><span class="s-icon">📍</span> Newcastle &amp; UK-Wide</div>
+    </div>
+    <div class="trust-dots" id="trustDots"></div>
   </div>
 
   <section id="services" aria-labelledby="services-heading">
@@ -1758,6 +1738,85 @@
 
       // Start tick loop
       rafId = requestAnimationFrame(tick);
+    })();
+    
+    /* ── 12. DUST MOTE CANVAS ───────────────────────────────── */
+    (function dustMotes() {
+      const canvas = document.getElementById('dustCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      const particles = [];
+      const PARTICLE_COUNT = 60;
+      function resize() {
+        width = window.innerWidth; height = window.innerHeight;
+        canvas.width = width; canvas.height = height;
+      }
+      window.addEventListener('resize', resize); resize();
+      for (let i=0; i<PARTICLE_COUNT; i++) {
+        particles.push({
+          x: Math.random() * width, y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.08, vy: (Math.random() - 0.5) * 0.08,
+          size: Math.random() * 2.5 + 1,
+          opacity: Math.random() * 0.25 + 0.1
+        });
+      }
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = '#a0c8ff';
+        particles.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = width; if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height; if (p.y > height) p.y = 0;
+          ctx.globalAlpha = p.opacity;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+          ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    /* ── 13. TRUST SLIDESHOW CAROUSEL ───────────────────────── */
+    (function slideshow() {
+      const slides = document.querySelectorAll('.trust-slide');
+      const dotsContainer = document.getElementById('trustDots');
+      if (!slides.length || !dotsContainer) return;
+      
+      let current = 0;
+      let interval;
+      
+      function showSlide(index) {
+        slides.forEach((s, i) => { s.classList.toggle('active', i === index); });
+        document.querySelectorAll('.trust-dot').forEach((d, i) => d.classList.toggle('active', i === index));
+      }
+      
+      function nextSlide() { 
+        current = (current + 1) % slides.length; 
+        showSlide(current); 
+      }
+      
+      function createDots() {
+        slides.forEach((_, i) => {
+          const dot = document.createElement('span'); 
+          dot.className = 'trust-dot' + (i === 0 ? ' active' : '');
+          dot.addEventListener('click', () => { 
+            current = i; 
+            showSlide(current); 
+            resetInterval(); 
+          });
+          dotsContainer.appendChild(dot);
+        });
+      }
+      
+      function resetInterval() { 
+        clearInterval(interval); 
+        interval = setInterval(nextSlide, 4000); 
+      }
+      
+      createDots();
+      interval = setInterval(nextSlide, 4000);
     })();
 
   })();
